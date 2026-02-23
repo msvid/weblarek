@@ -1,12 +1,12 @@
-import { IBuyer } from "../../types"
+import { IBuyer, TPayment, TBuyerErrors } from "../../types"
 
 export class Buyer {
-    payment: 'card' | 'cash' | null = null;
-    address: string = '';
-    phone: string = '';
-    email: string = '';
+    private payment: TPayment = null;
+    private address: string = '';
+    private phone: string = '';
+    private email: string = '';
 
-    setPayment(payment: 'card' | 'cash' | null): void {
+    setPayment(payment: TPayment): void {
         this.payment = payment;
     }
 
@@ -38,8 +38,8 @@ export class Buyer {
         this.email = ''
     }
 
-    validate(): { [key: string]: string } {
-        const errors: { [key: string]: string } = {}
+    validate(): TBuyerErrors {
+        const errors: TBuyerErrors = {}
         if(this.payment === null) {
             errors.payment = 'Не выбран способ оплаты'
         }

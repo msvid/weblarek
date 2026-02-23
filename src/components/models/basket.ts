@@ -1,7 +1,7 @@
 import { IProduct } from "../../types";
 
 export class Basket {
-    items: IProduct[] =[];
+    private items: IProduct[] =[];
 
     getItems(): IProduct[] {
         return this.items
@@ -20,13 +20,9 @@ export class Basket {
     }
 
     getTotalPrice(): number {
-        let total = 0
-        this.items.forEach(item => {
-            if (item.price !== null) {
-                total += item.price;
-            }
-        })
-        return total
+        return this.items
+            .filter(item => item.price !== null)
+            .reduce((acc, item) => acc + (item.price as number), 0);
     }
     
     getItemsCount(): number {
