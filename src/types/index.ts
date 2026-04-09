@@ -40,6 +40,27 @@ export interface IOrderRes {
     total: number;
 }
 
+export type ICardImage = {
+    src: string;
+    alt: string;
+}
+
+export type ICardAction = {
+    onClick: () => void;
+}
+
+export type ICardPreview = Omit<IProduct, 'image'> & {
+    image: ICardImage;
+    buttonText?: string;
+    disabled?: boolean;
+};
+
+export interface IBasketData {
+    items: HTMLElement[],
+    total: number
+}
+
+export type TCardBasket = Pick<IProduct, 'title' | 'price'> & {index: number}
 
 
-
+export type TCardCatalog = Pick<IProduct, 'category'> & {image: ICardImage};
