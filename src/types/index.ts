@@ -63,4 +63,4 @@ export interface IBasketData {
 export type TCardBasket = Pick<IProduct, 'title' | 'price'> & {index: number}
 
 
-export type TCardCatalog = Pick<IProduct, 'category'> & {image: ICardImage};
+export type TCardCatalog = Pick<IProduct, 'title'| 'price' |'category'> & {image: ICardImage};

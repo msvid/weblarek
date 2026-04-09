@@ -25,6 +25,8 @@ import { ContactsForm } from './components/view/form/contactsForm.ts'
 import { Success } from './components/view/success.ts'
 
 const toCardCatalogData = (product: IProduct): TCardCatalog => ({
+    title: product.title,
+    price: product.price,
     category: product.category,
     image: { src: product.image, alt: product.title },
 });
