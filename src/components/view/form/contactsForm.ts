@@ -1,39 +1,36 @@
-import { ensureElement } from "../../../utils/utils"
-import { IEvents } from "../../base/Events"
+import { ensureElement } from "../../../utils/utils";
 import { Form } from "./form";
+import { IEvents } from "../../base/Events";
 
-export class ContactsForm extends Form {
-    protected formEmailInput: HTMLInputElement
-    protected formPhoneInput: HTMLInputElement
+interface IContactsForm{
+    email: string;
+    phone: string;
+}
 
-    constructor(container: HTMLElement, events: IEvents) {
-        super(container, events)
-        this.formEmailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container)
-        this.formPhoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container)
+export class ContactsForm extends Form<IContactsForm>{
+    protected emailInputElement:HTMLInputElement;
+    protected phoneInputElement:HTMLInputElement;
 
-        this.formEmailInput.addEventListener('input', () => {
-            this.events.emit('contacts:email', { email: this.formEmailInput.value })
+    constructor(protected events: IEvents, container: HTMLElement){
+        super(events, container);
+
+        this.emailInputElement = ensureElement<HTMLInputElement>('[name="email"]', this.container);
+        this.phoneInputElement = ensureElement<HTMLInputElement>('[name="phone"]', this.container);
+
+        this.emailInputElement.addEventListener('input', () => {
+            this.events.emit('email:change', { email: this.emailInputElement.value })
         })
 
-        this.formPhoneInput.addEventListener('input', () => {
-            this.events.emit('contacts:phone', { phone: this.formPhoneInput.value })
-        })
-
-        this.formSubmitButton.addEventListener('click', (event) => {
-            event.preventDefault()
-            this.events.emit('contacts:submit')
+        this.phoneInputElement.addEventListener('input', () => {
+            this.events.emit('phone:change', { phone: this.phoneInputElement.value })
         })
     }
 
-    email(value: string): void {
-        this.formEmailInput.value = value
+    set email(value: string){
+        this.emailInputElement.value = value;
     }
 
-    phone(value: string): void {
-        this.formPhoneInput.value = value
-    }
-
-    protected onSubmit(): void {
-        this.events.emit('contacts:submit')
+    set phone(value: string){
+        this.phoneInputElement.value = value;
     }
 }

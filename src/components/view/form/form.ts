@@ -1,28 +1,35 @@
-import { Component } from "../../base/Component"
-import { ensureElement } from "../../../utils/utils"
-import { IEvents } from "../../base/Events"
+import { ensureElement } from "../../../utils/utils";
+import { Component } from "../../base/Component";
+import { IEvents } from "../../base/Events";
 
-export abstract class Form extends Component<HTMLElement> {
-    protected formSubmitButton: HTMLButtonElement
-    protected formError: HTMLElement
+interface IForm {
+    valid: boolean;
+}
 
-    constructor(protected container: HTMLElement, protected events: IEvents) {
-        super(container)
-        this.formSubmitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container)
-        this.formError = ensureElement<HTMLElement>('.form__errors', this.container)
+export abstract class Form<T> extends Component<T & IForm>{
+    protected submitButton:HTMLButtonElement;
+    protected errorsElement: HTMLElement;
+
+    constructor(protected events: IEvents, container: HTMLElement){
+        super(container);
+
+        this.submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container);
+        this.errorsElement = ensureElement<HTMLElement>('.form__errors', this.container);
+
+        this.submitButton.disabled = true;
+
         this.container.addEventListener('submit', (e) => {
             e.preventDefault()
-            this.onSubmit()
+            this.events.emit('form:submit');
         })
     }
 
-    errors(message: string): void {
-        this.formError.textContent = message
+    set valid(isValid: boolean) {
+        this.submitButton.disabled = !isValid;
     }
 
-    submitEnabled(enabled: boolean): void {
-        this.formSubmitButton.disabled = !enabled
+    errors(message: string): void{
+        this.errorsElement.textContent = message;
     }
 
-    protected abstract onSubmit(): void
 }

@@ -1,38 +1,42 @@
-import { ensureElement } from "../../utils/utils.ts";
-import { Component } from "../base/Component.ts";
-import { IEvents } from "../base/Events.ts";
+import { ensureElement } from "../../utils/utils";
+import { Component } from "../base/Component";
+import { IEvents } from "../base/Events";
 
-export class Modal extends Component<HTMLElement> {
-    protected modalContentElement:HTMLElement
-    protected closeButtonElement:HTMLButtonElement
+interface IModal {
+    content: HTMLElement
+}
 
-    constructor(container:HTMLElement, protected events:IEvents) {
+export class Modal extends Component<IModal>{
+    protected contentElement: HTMLElement;
+    protected closeButton: HTMLButtonElement;
+
+    constructor(protected events: IEvents, container: HTMLElement) {
         super(container);
 
-        this.modalContentElement = ensureElement<HTMLElement>('.modal__content', this.container);
-        this.closeButtonElement = ensureElement<HTMLButtonElement>('.modal__close', this.container);
+        this.contentElement = ensureElement<HTMLElement>('.modal__content', this.container);
+        this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', this.container);
 
-        this.closeButtonElement.addEventListener('click', () => {
-            this.close()
+        this.closeButton.addEventListener('click', () => {
+            this.close();
         });
 
-        this.container.addEventListener('click', (event: MouseEvent) => {
-            if (event.target === event.currentTarget) {
-                this.close()
+        this.container.addEventListener('click', (event) => {
+            if (event.target === this.container) {
+                this.close();
             }
         });
     }
 
-    set content(value: HTMLElement){
-        this.modalContentElement.replaceChildren(value)
+    set content(element: HTMLElement) {
+            this.contentElement.replaceChildren(element)
     }
 
-    open(content: HTMLElement) {
+    open() {
         this.container.classList.add('modal_active');
-        this.modalContentElement.replaceChildren(content)
     }
 
     close() {
-        this.container.classList.remove('modal_active')
+        this.container.classList.remove('modal_active');
     }
+
 }

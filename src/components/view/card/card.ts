@@ -1,26 +1,31 @@
-import { Component } from "../../base/Component.ts";
-import { ensureElement } from "../../../utils/utils.ts";
-import { IProduct } from "../../../types";
+import { ensureElement } from "../../../utils/utils";
+import { Component } from "../../base/Component";
 
-type TCard = Pick<IProduct, 'title' | 'price'>;
+interface ICard{
+    title: string;
+    price: number | null;
+}
 
-export abstract class Card<T> extends Component<T & TCard> {
-    protected titleElement: HTMLHeadingElement;
+export abstract class Card<T> extends Component<ICard & T>{
+    protected titleElement: HTMLElement;
     protected priceElement: HTMLElement;
 
-    constructor(container: HTMLElement) {
+    constructor(container:HTMLElement){
         super(container);
 
-        this.titleElement = ensureElement<HTMLHeadingElement>('.card__title', this.container);
+        this.titleElement = ensureElement<HTMLElement>('.card__title', this.container);
         this.priceElement = ensureElement<HTMLElement>('.card__price', this.container);
     }
 
-
-    set title(value: string) {
-        this.titleElement.textContent = value;
+    set title(value: string){
+        this.titleElement.textContent = String(value)
     }
 
-    set price(value: number) {
-        this.priceElement.textContent = value ? `${value} синапсов` : 'Бесценно';
+    set price(value: number | null){
+        if(value === null){
+            this.priceElement.textContent = `Бесценно`;
+        } else {
+            this.priceElement.textContent = `${value} синапсов`;
+        }
     }
 }

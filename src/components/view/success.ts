@@ -1,25 +1,28 @@
-import { Component } from "../base/Component"
-import { IOrderRes } from "../../types";
-import { IEvents } from "../base/Events"
-import { ensureElement } from "../../utils/utils"
+import { ensureElement } from "../../utils/utils";
+import { Component } from "../base/Component";
+import { IEvents } from "../base/Events";
 
-export class Success extends Component<IOrderRes> {
-    protected orderTitleElement: HTMLElement
-    protected orderDescription: HTMLElement
-    protected orderButton: HTMLButtonElement
+interface ISuccess {
+    totalPrice: number;
+}
 
-    constructor(container: HTMLElement, protected events: IEvents) {
-        super(container)
-        this.orderDescription = ensureElement<HTMLElement>('.order-success__description', container)
-        this.orderTitleElement = ensureElement<HTMLElement>('.order-success__title', container)
-        this.orderButton = ensureElement<HTMLButtonElement>('.order-success__close', container)
+export class Success extends Component<ISuccess>{
+    protected descriptionElement: HTMLElement;
+    protected closeButton: HTMLButtonElement;
 
-        this.orderButton.addEventListener('click', () => {
-            this.events.emit('success:close')
-        })
+    constructor(protected events: IEvents, container: HTMLElement){
+        super(container);
+
+        this.descriptionElement  = ensureElement<HTMLElement>('.order-success__description', this.container);
+        this.closeButton = ensureElement<HTMLButtonElement>('.order-success__close', this.container);
+
+        this.closeButton.addEventListener('click', () => {
+            this.events.emit('order:close');
+        });
     }
 
-    set total(value: number) {
-        this.orderDescription.textContent = `Списано ${value} синапсов`
+    set totalPrice(value: number) {
+        this.descriptionElement.textContent = `Списано ${value} синапсов`;
     }
+
 }

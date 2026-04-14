@@ -1,50 +1,59 @@
 import { ensureElement } from "../../../utils/utils";
+import { IEvents } from "../../base/Events";
 import { Card } from "./card";
-import { ICardImage, ICardPreview } from "../../../types";
-import { categoryMap, CDN_URL } from "../../../utils/constants";
-import { EventEmitter } from "../../base/Events.ts";
+import { CDN_URL, categoryMap } from "../../../utils/constants";
 
-export class CardPreview extends Card<ICardPreview> {
-    protected categoryI: HTMLElement;
-    protected img: HTMLImageElement;
-    private descriptionI: HTMLElement;
-    private cardButtonElement: HTMLButtonElement;
-    
-    constructor(container: HTMLElement, protected events: EventEmitter) {
+type CategoryKey = keyof typeof categoryMap
+
+interface ICardPreview {
+    category: string;
+    text: string;
+    image: string;
+}
+
+export class CardPreview extends Card<ICardPreview>{
+    protected categoryElement: HTMLElement;
+    protected textElement: HTMLElement;
+    protected imageElement: HTMLImageElement;
+    protected cardButton:HTMLButtonElement;
+
+    constructor(protected events:IEvents, container:HTMLElement){
         super(container);
 
-        this.descriptionI = ensureElement<HTMLElement>('.card__text', this.container);
-        this.cardButtonElement = ensureElement<HTMLButtonElement>('.card__button', this.container);
-        this.categoryI = ensureElement<HTMLElement>('.card__category', this.container);
-        this.img = ensureElement<HTMLImageElement>('.card__image', this.container)
+        this.categoryElement = ensureElement<HTMLElement>('.card__category', this.container);
+        this.textElement = ensureElement<HTMLElement>('.card__text', this.container);
+        this.imageElement = ensureElement<HTMLImageElement>('.card__image', this.container);
+        this.cardButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
 
-        this.cardButtonElement.addEventListener('click', () => {
+        this.cardButton.addEventListener('click', () => {
             this.events.emit('cardPreview:click');
         });
     }
 
-    set description(value: string) {
-        this.descriptionI.textContent = value;
+    set category(value:string) {
+        this.categoryElement.textContent = value
+    
+        for (const key in categoryMap){
+            this.categoryElement.classList.toggle(
+                categoryMap[key as CategoryKey],
+                key === value
+            )
+        }   
+    }
+    
+    set image(value:string){
+        const fullUrl = value.startsWith('http') ? value : CDN_URL + value;
+        this.setImage(this.imageElement, fullUrl, '');
     }
 
-    set category(value: keyof typeof categoryMap) {
-        this.categoryI.classList.add(categoryMap[value]);
-        this.categoryI.textContent = value;
+    set text(value: string){
+        this.textElement.textContent = value;
     }
-
-    set image(value: ICardImage) {
-        this.setImage(this.img, CDN_URL + value.src, value.alt);
-    }
-
-    set buttonText(value: string) {
-        this.cardButtonElement.textContent = value;
+    set buttonText(value: string) { 
+        this.cardButton.textContent = value;
     }
 
     set buttonDisabled(value: boolean) {
-        if (value) {
-            this.cardButtonElement.setAttribute('disabled', 'disabled');
-        } else {
-            this.cardButtonElement.removeAttribute('disabled');
-        }
+        this.cardButton.disabled = value;
     }
 }

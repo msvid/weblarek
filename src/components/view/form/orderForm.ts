@@ -1,40 +1,42 @@
-import { ensureElement } from "../../../utils/utils"
-import { IEvents } from "../../base/Events"
 import { Form } from "./form";
+import { TPayment } from "../../../types";
+import { IEvents } from "../../base/Events";
+import { ensureElement } from "../../../utils/utils";
 
-export class OrderForm extends Form {
-    protected formAddressInput: HTMLInputElement
-    protected formCardPayButton: HTMLButtonElement
-    protected formCashPayButton: HTMLButtonElement
+interface IOrderForm{
+    payment: TPayment;
+    address: string;
+}
 
-    constructor(container: HTMLElement, events: IEvents) {
-        super(container, events)
+export class OrderForm extends Form<IOrderForm>{
+    protected cashPayButton: HTMLButtonElement;
+    protected onlinePayButton: HTMLButtonElement;
+    protected adressInputElement: HTMLInputElement;
 
-        this.formCardPayButton = ensureElement<HTMLButtonElement>('[name="card"]', this.container)
-        this.formCashPayButton = ensureElement<HTMLButtonElement>('[name="cash"]', this.container)
-        this.formAddressInput = ensureElement<HTMLInputElement>('[name="address"]', this.container)
+    constructor(protected events: IEvents, container: HTMLElement){
+        super(events, container);
 
-        this.formCardPayButton.addEventListener('click', () => {
+        this.cashPayButton = ensureElement<HTMLButtonElement>('[name="cash"]', this.container);
+        this.onlinePayButton = ensureElement<HTMLButtonElement>('[name="card"]', this.container);
+        this.adressInputElement = ensureElement<HTMLInputElement>('.form__input', this.container);
+
+        this.onlinePayButton.addEventListener('click', () => {
             this.events.emit('payment:change', { payment: 'card' })
         })
-        this.formCashPayButton.addEventListener('click', () => {
+        this.cashPayButton.addEventListener('click', () => {
             this.events.emit('payment:change', { payment: 'cash' })
         })
-        this.formAddressInput.addEventListener('input', () => {
-            this.events.emit('address:change', { address: this.formAddressInput.value })
+        this.adressInputElement.addEventListener('input', () => {
+            this.events.emit('address:change', { address: this.adressInputElement.value })
         })
     }
 
-    address(value: string): void {
-        this.formAddressInput.value = value
+    set payment(value: TPayment){
+        this.onlinePayButton.classList.toggle('button_alt-active', value === 'card');
+        this.cashPayButton.classList.toggle('button_alt-active', value === 'cash');
     }
 
-    selectPaymentButtonStatus(status: 'card' | 'cash' | null): void {
-        this.formCardPayButton.classList.toggle('button_alt-active', status === 'card')
-        this.formCashPayButton.classList.toggle('button_alt-active', status === 'cash')
-    }
-
-    protected onSubmit(): void {
-        this.events.emit('order:submit')
+    set address(value: string) {
+        this.adressInputElement.value = value
     }
 }

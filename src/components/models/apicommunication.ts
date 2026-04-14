@@ -1,7 +1,7 @@
 import { IApi, IProductList, IOrder, IOrderRes, IProduct } from "../../types";
 
 export class ApiCommunication {
-    private readonly api: IApi;
+    api: IApi;
 
     constructor(api: IApi) {
         this.api = api

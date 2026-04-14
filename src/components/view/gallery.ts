@@ -1,20 +1,19 @@
-import { Component } from "../base/Component.ts";
+import { Component } from "../base/Component";
 
 interface IGallery {
-    catalogElement: HTMLElement[]
+    catalog: HTMLElement[];
 }
 
 export class Gallery extends Component<IGallery> {
-    constructor (container: HTMLElement) {
-        super(container);
+    protected catalogElement: HTMLElement;
+
+    constructor(container: HTMLElement) {
+        super(container)
+
+        this.catalogElement = container
     }
 
-    set catalog (items: HTMLElement[]) {
-        this.container.replaceChildren(...items);
-    }
-
-    render(data: IGallery): HTMLElement {
-        this.catalog = data.catalogElement;
-        return this.container;
+    set catalog(items: HTMLElement[]) {
+        this.catalogElement.replaceChildren(...items)
     }
 }
