@@ -11,7 +11,7 @@ import { Header } from './components/view/header.ts';
 import { Gallery } from './components/view/gallery.ts';
 import { EventEmitter } from './components/base/Events.ts';
 import { Modal } from './components/view/modal.ts';
-import { BasketView } from './components/view/basket.ts';
+import { BasketView } from './components/view/basketView.ts';
 import { CardCatalog } from './components/view/card/cardCatalog.ts';
 import { CardPreview } from './components/view/card/cardPreview.ts';
 import { CardBasket } from './components/view/card/cardBasket.ts';
