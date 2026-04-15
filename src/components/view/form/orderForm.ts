@@ -19,7 +19,7 @@ export class OrderForm extends Form<IOrderForm>{
         this.cashPayButton = ensureElement<HTMLButtonElement>('[name="cash"]', this.container);
         this.onlinePayButton = ensureElement<HTMLButtonElement>('[name="card"]', this.container);
         this.adressInputElement = ensureElement<HTMLInputElement>('.form__input', this.container);
-
+    
         this.onlinePayButton.addEventListener('click', () => {
             this.events.emit('payment:change', { payment: 'card' })
         })
@@ -29,6 +29,11 @@ export class OrderForm extends Form<IOrderForm>{
         this.adressInputElement.addEventListener('input', () => {
             this.events.emit('address:change', { address: this.adressInputElement.value })
         })
+
+        this.container.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.events.emit('order:submit'); 
+        });
     }
 
     set payment(value: TPayment){

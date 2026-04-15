@@ -1,6 +1,6 @@
-import { ensureElement } from "../../../utils/utils";
+import { ensureElement } from "../../../utils/utils"
+import { IEvents } from "../../base/Events"
 import { Form } from "./form";
-import { IEvents } from "../../base/Events";
 
 interface IContactsForm{
     email: string;
@@ -24,6 +24,11 @@ export class ContactsForm extends Form<IContactsForm>{
         this.phoneInputElement.addEventListener('input', () => {
             this.events.emit('phone:change', { phone: this.phoneInputElement.value })
         })
+
+        this.container.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.events.emit('contacts:submit');
+        });
     }
 
     set email(value: string){

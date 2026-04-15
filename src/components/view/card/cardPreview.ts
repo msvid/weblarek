@@ -1,13 +1,13 @@
 import { ensureElement } from "../../../utils/utils";
-import { IEvents } from "../../base/Events";
 import { Card } from "./card";
-import { CDN_URL, categoryMap } from "../../../utils/constants";
+import { categoryMap, CDN_URL } from "../../../utils/constants";
+import { IEvents } from "../../base/Events.ts";
 
 type CategoryKey = keyof typeof categoryMap
 
 interface ICardPreview {
     category: string;
-    text: string;
+    description: string;
     image: string;
 }
 
@@ -40,15 +40,16 @@ export class CardPreview extends Card<ICardPreview>{
             )
         }   
     }
-    
+
+    set description(value: string){
+        this.textElement.textContent = value;
+    }
+
     set image(value:string){
         const fullUrl = value.startsWith('http') ? value : CDN_URL + value;
         this.setImage(this.imageElement, fullUrl, '');
     }
 
-    set text(value: string){
-        this.textElement.textContent = value;
-    }
     set buttonText(value: string) { 
         this.cardButton.textContent = value;
     }
